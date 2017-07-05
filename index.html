@@ -1,3 +1,93 @@
+<!DOCTYPE html>
 <html>
+<head>
+	<title>Alconblue</title>
+	<meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style type="text/css">
+#header {
+	width: 100%;
+	position: fixed;
+}
+#panel1 {
+	width: 100%;
+	height: 400px;
+	background-image: url("background.jpg");
+}
+#alconblue {
+	font-family: 'Montserrat', sans-serif;
+	margin-top: 50px;
+	font-size: 100px;
+	color: white;
+}
+#zoeb {
+	font-family: 'Montserrat', sans-serif;
+}
+#panel2 {
+	width: 60%;
+	height: 800px;
+	margin-left: 20%;
+	background-color: #383737;
+	padding: 40px;
+}
+#border {
+	width: 60%;
+	height: 10px;
+	margin-left: 20%;
+	background-color: #CCC;
+	padding-top:15px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+#command {
+	color: white;
+	font-size: 20px
+}
+#answer {
+	color: lightgrey;
+	font-size: 15px;
+}
+#description {
+	font-size: 30px;
+	color: lightblue;
+}
+</style>	
 <body>
+	<div id="header" class="w3-container w3-teal">
+  		<h1 id="zoeb" align="center">Zoeb Mithaiwala</h1>
+	</div>
+		<br><br><br>
+	<div id="panel1" class="panel">
+
+		<h1 align="center" id="alconblue">Alconblue</h1>
+		<p align="center" id="description"> Hello, I am a aspiring computer engineer.</p>
+		<br><br><br>
+		<div id="border"></div>
+		<div id="panel2" class="panel">
+			<p id="command">> print name</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>"Zoeb Mithaiwala"</p>
+			<p id="command">> print username</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>"Alconblue"</p>
+			<p id="command">> Zoeb.origin</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>"Surat, Gujarat"</p>
+			<p id="command">> Zoeb.education</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>"National Institute of Technology Karnataka, Surathkal"</p>
+			<p id="command">> Zoeb.major</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>"Computer Science"</p>
+			<p id="command">> Zoeb.expectedGraduation</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>"May 2019"</p>
+			<p id="command">> Zoeb.interests</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>["Design", "Code", "movies", "reading"]</p>
+			<p id="command">> Zoeb.resume</p>
+			<p id="answer" href="/CV.pdf">&nbsp;&nbsp;&nbsp;&nbsp;=>"<a style="color:lightgrey; font-size: 15px;" href="CV.pdf">resume.pdf</a>"</p>
+			<p id="command">> Zoeb.email</p>
+			<p id="answer">&nbsp;&nbsp;&nbsp;&nbsp;=>"zoebmithaiwala1@gmail.com"</p>			
+		</div>
+	</div>
+</body>
 </html>
