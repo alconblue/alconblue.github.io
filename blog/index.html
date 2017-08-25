@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<head>
 <title>Alconblue | Blog</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,63 @@
 <style>
 body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 </style>
+<style>
+    .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+
+    .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .sidenav a:hover, .offcanvas a:focus{
+        color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
+  </style>
+
+  <script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+  </script>
+</head>
 <body class="w3-light-grey">
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="../index.html">About</a>
+      <a href="index.html">Blogs</a>
+  </div>
 
 <!-- w3-content defines a container for fixed size centered content, 
 and is wrapped around the whole page content, except for the footer in this example -->
@@ -16,6 +73,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 
 <!-- Header -->
 <header class="w3-container w3-center w3-padding-32"> 
+      <span style="font-size:30px;cursor:pointer; float: left" onclick="openNav()">&#9776;</span>
   <h1><b>MY BLOG</b></h1>
   <p>Welcome to the blog of <span class="w3-tag">ALCONBLUE</span></p>
 </header>
@@ -63,8 +121,8 @@ and is wrapped around the whole page content, except for the footer in this exam
     </div>
     <ul class="w3-ul w3-hoverable w3-white">
       <a href="mac_spoofing.html"><li class="w3-padding-16">
-        <span class="w3-large">Lorem</span><br>
-        <span>Sed mattis nunc</span>
+        <span class="w3-large">MAC Spoofing</span><br>
+        <span>Bypassing user-authentication</span>
       </li></a>  
     </ul>
   </div>
@@ -82,7 +140,7 @@ and is wrapped around the whole page content, except for the footer in this exam
 <!-- Footer -->
 <footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
   <button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Previous</button>
-  <button class="w3-button w3-black w3-padding-large w3-margin-bottom">Next »</button>
+  <button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Next »</button>
   </p>
 </footer>
 
