@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HAPPY BIRTHDAY</title>
+</head>
+<body id="body" style="background: url(1.jpg);background-size:     cover;background-repeat: no-repeat;background-position: center center">
+<br>
+<br>
+<center id="quote">
+<img src="quote1.png" height="300" width="300">
+</center>
+<button onclick="decrease()" style="float:left"><</button> 
+<button onclick="increase()" style="float:right">></button> 
+</body>
+<script type="text/javascript">
+	var i=1;
+	function increase()
+	{
+		if (i<10)
+		{
+		document.getElementById('body').style.background="url("+(i+1)+".jpg)";
+		document.getElementById('quote').innerHTML='<img src="quote'+(i+1)+'.png" height="300" width="300">'
+		i=i+1;
+	}
+	}
+	function decrease()
+	{
+		if (i>1)
+		{
+			document.getElementById('body').style.background="url("+(i-1)+".jpg";
+			document.getElementById('quote').innerHTML='<img src="quote'+(i-1)+'.png" height="300" width="300">'
+			i=i-1;
+		}
+	}
+</script>
+</html>
