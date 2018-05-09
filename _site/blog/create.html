@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>New Blog</title>
+</head>
+<body style="background-color:  #154360 ">
+<form onsubmit="false">
+	<p style="color: white">Name of new Blog:</p>
+	<p><input type="text" name="heading"></p>
+	<p style="color: white">Sub Heading Of Blog:</p>
+	<p><input type="text" name="sub-heading"></p>
+	<p style="color: white">Date of Publishing: (Format = Aug 15, 2017)</p>
+	<p><input type="text" name="date"></p>
+	<p><button type="button" id="header" onclick="Header()">Confirm Header</button></p>
+	<div id="extra">
+	</div>
+	<div id="buttons">
+	</div>
+</form>
+
+<script type="text/javascript">
+	var s='<!DOCTYPE html><html><head><title>Alconblue | Mac Spoofing</title><meta charset="UTF-8"><link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway"><style>body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}</style><style>.sidenav {height: 100%;width: 0;position: fixed;		    z-index: 1; top: 0;   left: 0;	    background-color: #111;		    overflow-x: hidden;		    transition: 0.5s;		    padding-top: 60px;		}		.sidenav a {		    padding: 8px 8px 8px 32px;		    text-decoration: none;		    font-size: 25px;		    color: #818181;		    display: block;		    transition: 0.3s;		}		.sidenav a:hover, .offcanvas a:focus{		    color: #f1f1f1;		}		.sidenav .closebtn {		    position: absolute;		    top: 0;		    right: 25px;		    font-size: 36px;		    margin-left: 50px;		}		@media screen and (max-height: 450px) {		  .sidenav {padding-top: 15px;}		  .sidenav a {font-size: 18px;}		}	</style> <script>	function openNav() {    	document.getElementById("mySidenav").style.width = "250px";	}	function closeNav() {  		document.getElementById("mySidenav").style.width = "0";	}</	script></head><body class="w3-light-grey"><header class="w3-container w3-center w3-padding-32"> 	<span style="font-size:30px;cursor:pointer; float: left" onclick="openNav()">&#9776;</span>	<h1><b>';
+	var i = 0;
+	var j = 0;
+	var k = 0;
+	var buttonP = '<p><button type="button" onclick="h5f()">Heading (h5)</button></p>	<p><button type="button" onclick="p()">Paragraph (p)</button></p>	<p><button type="button" onclick="code()">Code (code)</button></p>	<p><input type="submit" value="submit"></p>';
+
+	function Header() {
+		s+=document.getElementsByName("heading")[0].value;
+		s+='</b></h1><h3><span class="w3-opacity">'
+		s+=document.getElementsByName("date")[0].value;
+		s+='</span></h3>	</header>	<div id="mySidenav" class="sidenav">  		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>  		<a href="../index.html">Zoeb</a>  		<a href="index.html">Blogs</a>	</div>	<div class="w3-card-4 w3-margin w3-white">'
+		alert(s);
+		document.getElementById("header").outerHTML = "";
+		document.getElementById("buttons").innerHTML = buttonP;
+	}
+
+	function h5f() {
+		document.getElementById("extra").innerHTML += '<p><textarea rows="6" cols="30%" name="h5"></textarea></p><p><button id="add" type="button" onclick="addh5()">Add To Page</button>';
+		document.getElementById("buttons").innerHTML = "";
+	}
+
+	function p() {
+
+	}
+
+	function code() {
+
+	}
+
+	function addh5() {
+		s+=document.getElementsByName("h5")[i].value;
+		i=i+1;
+		document.getElementById("add").outerHTML = "";
+		document.getElementById("buttons").innerHTML = buttonP;
+	}
+
+</script>
+</body>
+</html>
