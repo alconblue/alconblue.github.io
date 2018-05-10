@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Alconblue</title>
+	<meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="shortcut icon" href="Logo.ico"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
+</head>
+<style>
+    .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+
+    .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .sidenav a:hover, .offcanvas a:focus{
+        color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
+  </style>
+
+<style type="text/css" media="screen">
+#header {
+	width: 100%;
+	position: fixed;
+    top: 0%;
+}
+#zoeb {
+	font-family: 'Montserrat', sans-serif;
+}
+#alconblue {
+	font: 400 100px/1.3 'Lobster Two', Helvetica, sans-serif;
+	margin-top: 120px;
+	font-size: 50px;
+	color: white;
+}
+</style>	
+
+<style type="text/css" media="handheld, only screen and (max-device-width:480px)">
+#header {
+	width: 100%;
+	position: fixed;
+}
+
+#zoeb {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 200%;
+}
+
+</style>	
+<script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+  </script>
+<style>.container {
+        margin: 0 auto;
+        width: 250px;
+        margin-top: 10%;
+        height: 200px;
+        position: relative;
+        perspective: 1000px;
+      }
+      
+      .carousel {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        transform-style: preserve-3d;
+        transition: transform 1s;
+      }
+      
+      .item {
+        display: block;
+        position: absolute;
+        background: #000;
+        width: 250px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+        color: #FFF;
+        opacity: 0.95;
+        border-radius: 10px;
+      }
+      
+      .a {
+        transform: rotateY(0deg) translateZ(250px);
+        background: #ed1c24;
+      }
+      .b {
+        transform: rotateY(60deg) translateZ(250px);
+        background: #0072bc;
+      }
+      .c {
+        transform: rotateY(120deg) translateZ(250px);
+        background: #39b54a;
+      }
+      .d {
+        transform: rotateY(180deg) translateZ(250px);
+        background: #f26522;
+      }
+      .e {
+        transform: rotateY(240deg) translateZ(250px);
+        background: #630460;
+      } 
+      .f {
+        transform: rotateY(300deg) translateZ(250px);
+        background: #8c6239;
+      }
+      
+      .next, .prev {
+        color: #444;
+        position: absolute;
+        top: 70%;
+        padding: 1em 2em;
+        cursor: pointer;
+        background: #CCC;
+        border-radius: 5px;
+        border-top: 1px solid #FFF;
+        box-shadow: 0 5px 0 #999;
+        transition: box-shadow 0.1s, top 0.1s;
+      }
+      .next:hover, .prev:hover { color: #000; }
+      .next:active, .prev:active {
+        top: 71%;
+        box-shadow: 0 1px 0 #999;
+      }
+      .next { right: 5em; }
+      .prev { left: 5em; }
+      .modal-body h4 {color: blue;}
+      .modal-body p {
+          color: purple;
+      }
+      .modal-header {
+          background-color:orange;
+      }
+      .modal-footer {
+          background-color: orange;
+      }
+      .modal-body {
+          background-color: lightyellow;
+      }
+          </style>
+<body style="background-color:  #154360 ">
+	<div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="blog/index.html">Blogs</a>
+  </div>
+    <div id="header" class="w3-container w3-teal">
+  		<h1 id="zoeb" align="center"><span style="font-size:30px;cursor:pointer; float: left" onclick="openNav()">&#9776;</span>Zoeb Mithaiwala</h1>
+    </div>
+    <h1 align="center" id="alconblue">Resume</h1>
+    <div class="container">
+            <div class="carousel">
+              <div class="item a">
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#academics">Academics</button>
+              </div>
+              <div class="item b">
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#courses">Courses</button>
+              </div>
+              <div class="item c">
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#languages">Languages</button>
+              </div>
+              <div class="item d">
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#tools">Tools And<br>Frameworks</button>
+              </div>
+              <div class="item e">
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#achievements">Achievements</button>
+              </div>
+              <div class="item f">
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#extra-cirricular">Extra-Cirricular</button>
+              </div>
+            </div>
+          </div>
+          <div class="next">Next</div>
+          <div class="prev">Prev</div>
+          <!-- Modal -->
+          <div class="modal fade" id="academics" role="dialog">
+                <div class="modal-dialog modal-lg">
+                
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Academics</h4>
+                    </div>
+                    <div class="modal-body">
+                        <ul>
+                        <li>
+                        <h4>National Institute Of Technology Karnataka, Surathkal, Mangalore, INDIA</h4>
+                        <p>9.33 CGPA (current)</p>
+                        </li>
+                        <li>
+                            <h4>T T.V. Sarvajanik High School, Surat ,INDIA (Gujarat State Board)</h4>
+                            <p>Class 11th and 12th - 95.3%, and 99/100 in Maths.</p>
+                        </li>
+                        <li>
+                            <h4>M.T Boys Technical High School, Surat, INDIA</h4>
+                            <p>Class 10 - 92%</p>
+                        </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+              <div class="modal fade" id="courses" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                    
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">Relevant Courses</h4>
+                        </div>
+                        <div class="modal-body">
+                          <ul>
+                              <li><h5>Number Theory and Cryptogrpahy</h5></li>
+                              <li><h5>Computer Networks</h5></li>
+                              <li><h5>Database Management Systems</h5></li>
+                              <li><h5>Software Engineering</h5></li>
+                              <li><h5>Operating Systems</h5></li>
+                              <h5><li>Object Oriented Programming</li></h5>
+                              <h5><li>Data Structures And Algorithms</li></h5>
+                              <h5><li>Compiler Design</li></h5>
+                              <h5><li>Advanced Computer Networks</li></h5>
+                              <h5><li>Advanced Data Structures</li></h5>
+                              <h5><li>Computer Graphics</li></h5>
+                          </ul>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                  <div class="modal fade" id="languages" role="dialog">
+                        <div class="modal-dialog modal-lg">
+                        
+                          <!-- Modal content-->
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title">Languages</h4>
+                            </div>
+                            <div class="modal-body">
+                              <ul>
+                                  <h5><li>C</li></h5><h5><li> C++</li></h5><h5><li> PYTHON</li></h5><h5><li> JAVASCRIPT</li></h5><h5><li> CSS</li></h5><h5><li> RUBY</li></h5><h5><li>JAVA</li></h5><h5><li>HTML</li></h5><h5><li>jQuery</li></h5><h5><li>PHP</li></h5>
+                              </ul>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      </div>
+                      <div class="modal fade" id="extra-cirricular" role="dialog">
+                            <div class="modal-dialog modal-lg">
+                            
+                              <!-- Modal content-->
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  <h4 class="modal-title">Extra-Cirricular</h4>
+                                </div>
+                                <div class="modal-body">
+                                  <h5><li>Competed in Capture The Flag events (CTFTime Team = 3NIGM4)</li></h5>
+                                  <h5><li>Web-Master and Core Member of ACM NITK student Chapter.</li></h5>
+                                  <h5><li>Executive Member of Webclub NITK.</li></h5>
+                                  <h5><li>Member of developers team at IRIS NITK.</li></h5>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                              
+                            </div>
+                          </div>
+                          <div class="modal fade" id="tools" role="dialog">
+                                <div class="modal-dialog modal-lg">
+                                
+                                  <!-- Modal content-->
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                      <h4 class="modal-title">Tools And Frameworks</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5><li>BurpSuite</li></h5>
+                                        <h5><li>MetaSploit</li></h5>
+                                        <h5><li>sqlmap</li></h5>
+                                        <h5><li>DirBuster</li></h5>
+                                        <h5><li>Linux</li></h5>
+                                        <h5><li>GIT</li></h5>
+                                        <h5><li>STL(C++)</li></h5>
+                                        <h5><li>Ruby on Rails</li></h5>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                              <div class="modal fade" id="achievements" role="dialog">
+                                    <div class="modal-dialog modal-lg">
+                                    
+                                      <!-- Modal content-->
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          <h4 class="modal-title">Achievements</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                          <h5><li>Winner of Microsoft Hackathon Code.Fun.Do 2015-16 during freshman year.</li></h5>
+                                          <h5><li>First in Competitive Coding Event Knapsack organised by ACM.</li></h5>
+                                          <h5><li>Ranked 1160 in JEE MAINS 2015.</li></h5>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+</body>
+<script>
+        $(document).ready(function () {
+      //your code here
+    var carousel = $(".carousel"),
+            currdeg  = 0;
+        
+        $(".next").on("click", { d: "n" }, rotate);
+        $(".prev").on("click", { d: "p" }, rotate);
+        
+        function rotate(e){
+          if(e.data.d=="n"){
+            currdeg = currdeg - 60;
+          }
+          if(e.data.d=="p"){
+            currdeg = currdeg + 60;
+          }
+          carousel.css({
+            "-webkit-transform": "rotateY("+currdeg+"deg)",
+            "-moz-transform": "rotateY("+currdeg+"deg)",
+            "-o-transform": "rotateY("+currdeg+"deg)",
+            "transform": "rotateY("+currdeg+"deg)"
+          });
+        }
+    });
+    </script>
+</html>
