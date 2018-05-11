@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Alconblue | Same Origin Policy</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+	<style>
+		body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+	</style>
+	<style>
+		body{
+			background-color: #313454;
+		}
+		.sidenav {
+		    height: 100%;
+		    width: 0;
+		    position: fixed;
+		    z-index: 1;
+		    top: 0;
+		    left: 0;
+		    background-color: #111;
+		    overflow-x: hidden;
+		    transition: 0.5s;
+		    padding-top: 60px;
+		}
+
+		.sidenav a {
+		    padding: 8px 8px 8px 32px;
+		    text-decoration: none;
+		    font-size: 25px;
+		    color: #818181;
+		    display: block;
+		    transition: 0.3s;
+		}
+
+		.sidenav a:hover, .offcanvas a:focus{
+		    color: #f1f1f1;
+		}
+
+		.sidenav .closebtn {
+		    position: absolute;
+		    top: 0;
+		    right: 25px;
+		    font-size: 36px;
+		    margin-left: 50px;
+		}
+
+		@media screen and (max-height: 450px) {
+		  .sidenav {padding-top: 15px;}
+		  .sidenav a {font-size: 18px;}
+		}
+	</style>
+
+	<script>
+		function openNav() {
+    	document.getElementById("mySidenav").style.width = "250px";
+		}
+
+		function closeNav() {
+    		document.getElementById("mySidenav").style.width = "0";
+		}
+	</script>
+</head>
+<body>
+
+	<header class="w3-container w3-center w3-padding-32"> 
+		<span style="font-size:30px;cursor:pointer; float: left" onclick="openNav()">&#9776;</span>
+  		<h1><span class="w3-tag"><b>Same Origin Policy</b></span></h1>
+  		<h3>May 11, 2018</h3>
+	</header>
+
+	<div id="mySidenav" class="sidenav">
+  		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+		  <a href="../index.html">Home</a>
+		  <a href="../resume.html">Resume</a>
+  		<a href="index.html">Blogs</a>
+	</div>
+
+	<div class="w3-card-4 w3-margin w3-white">
+		<div class="w3-container">
+			<h5><b>What is an origin?</b></h5>
+		</div>
+		<div class="w3-container">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;An origin is the combination of three things: (i) Protocol (ii) Host (iii) Port.<br>
+            So <i><u>http<b>s</b>://www.example.com/file.html</u></i> and <i><u>http://www.example.com/file.html</u></i> have different origins because of <strong>Protocol</strong><br>
+            <i><u>http://www.example.com<b>:8000</b>/file.html</u></i> and <i><u>http://www.example.com/file.html</u></i> have different origins because of <strong>Ports</strong><br>
+            <i><u>http://www.<b>different_</b>example.com/file.html</u></i> and <i><u>http://www.example.com/file.html</u></i> have different origins because of <strong>Hosts</strong><br>
+        </p>
+		</div>
+		<div class="w3-container">
+			<h5><b>What are the origins when you visit a URL?</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;Scripts executed in web page with the use of JavaScript have the same origin as the document that opened that opened that URL. So basically if JavaScript or any other method is used to load pages the origin is inherited. Therefore if some malicious website is trying to load the content of your website and you have same origin enabled then the content will not be made available to that malicious website.</p>
+		</div>
+		<div class="w3-container">
+			<h5><b>Example of malicious attack possible without same origin policy.</b></h5>
+		</div>
+		<div class="w3-container">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp; &lt;iframe&gt; HTML tag can be used to load frames from other sites. Following are two iframes:<br>
+                <br>(i) &lt;iframe src="https://www.google.com"&gt;<br>
+                <iframe src="https://www.google.com"></iframe><br>
+                As you can see it has not been loaded.
+                (ii) &lt;iframe src="http://www.nitk.ac.in"&gt;<br>
+                <iframe src="http://www.nitk.ac.in"></iframe><br>
+                While this iframe was successfully loaded.<br>
+                <br>The reason behind this is that Google does not allow cross origin framing while NITK website does.
+                <br>If cross origin framing is allowed, then the details obtained in this frame can be sent to the malicious website owner and since authentication in majority of the websites is done by cookies, the authentication system can be bypassed.    
+            </p>
+        </div>
+        <div class="w3-container">
+                <h5><b>How to check if website allows cross-origin requests?</b></h5>
+            </div>
+        <div class="w3-container">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;Go to the networks tab of browser (or any other proxy like BurpSuite) and check the response headers for the page/file you are trying to access from the server. There is a field called <b>x-frame-options</b> in the response header of an HTTP Response. There are three possible directives for this:<br>(i)DENY<br>(ii)SAMEORIGIN<br>(iii)ALLOW-FROM https://example.com/<br>
+            <br>DENY allows cross-origin requests<br>
+            SAMEORIGIN forces the request and response to be generated from the same origin.<br>
+            ALLOW-FROM The page can only be displayed in a frame on the specified origin.
+            <br><br>Set the x-frame-options as SAMEORIGIN in your servers to avoid attacks like clickjacking and XSS(need CSRF tokens as well, too much detailed to be covered here).
+            </p>
+        </div>
+        <div class="w3-container">
+                <h5><b>CORS</b></h5>
+            </div>
+        <div class="w3-container">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>CORS (CROSS ORIGIN RESOURCE SHARING)</b> is a new methid which uses addition HTTP header options to be able to share data between different origins securely. Only the data permitted by the server can be accessed by a request from different origin.</p>
+        </div>
+
+	</div>
+	<footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+  	<a href="index.html"><button class="w3-button w3-black w3-padding-large w3-margin-bottom">Previous</button></a>
+  	<button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Next »</button>
+	</footer>
+</body>
+</html>
