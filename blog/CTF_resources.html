@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Alconblue | Mac Spoofing</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+	<style>
+		body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+	</style>
+	<style>
+		body{
+			background-color: #313454;
+		}
+		.sidenav {
+		    height: 100%;
+		    width: 0;
+		    position: fixed;
+		    z-index: 1;
+		    top: 0;
+		    left: 0;
+		    background-color: #111;
+		    overflow-x: hidden;
+		    transition: 0.5s;
+		    padding-top: 60px;
+		}
+
+		.sidenav a {
+		    padding: 8px 8px 8px 32px;
+		    text-decoration: none;
+		    font-size: 25px;
+		    color: #818181;
+		    display: block;
+		    transition: 0.3s;
+		}
+
+		.sidenav a:hover, .offcanvas a:focus{
+		    color: #f1f1f1;
+		}
+
+		.sidenav .closebtn {
+		    position: absolute;
+		    top: 0;
+		    right: 25px;
+		    font-size: 36px;
+		    margin-left: 50px;
+		}
+
+		@media screen and (max-height: 450px) {
+		  .sidenav {padding-top: 15px;}
+		  .sidenav a {font-size: 18px;}
+		}
+	</style>
+
+	<script>
+		function openNav() {
+    	document.getElementById("mySidenav").style.width = "250px";
+		}
+
+		function closeNav() {
+    		document.getElementById("mySidenav").style.width = "0";
+		}
+	</script>
+</head>
+<body>
+
+	<header class="w3-container w3-center w3-padding-32"> 
+		<span style="font-size:30px;cursor:pointer; float: left" onclick="openNav()">&#9776;</span>
+  		<h1><span class="w3-tag"><b>Capture The Flag (CTF) Resources</b></span></h1>
+  		<h3>Oct 15, 2018</h3>
+	</header>
+
+	<div id="mySidenav" class="sidenav">
+  		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+		  <a href="../index.html">Home</a>
+		  <a href="../resume.html">Resume</a>
+  		<a href="index.html">Blogs</a>
+	</div>
+
+	<div class="w3-card-4 w3-margin w3-white">
+		<div class="w3-container">
+			<h5><b>RSA tool to crack public key small primes, make public and private keys given values, etc.</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/Ganapati/RsaCtfTool">https://github.com/Ganapati/RsaCtfTool</a></p>
+		</div>
+		<div class="w3-container">
+			<h5><b>Forensics Steganography Tool</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.caesum.com/handbook/Stegsolve.jar">http://www.caesum.com/handbook/Stegsolve.jar</a>
+		</div>
+		<div class="w3-container">
+			<h5><b>curl to send modified requests</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;sudo apt install curl</p>
+		</div>
+		<div class="w3-container">
+			<h5><b>Code to convert Integers to strings</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href="int2Text.py">int2Text.py</a></p>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;Change the value of integer in the code and get string for that integer value.</p>
+		</div>
+		<div class="w3-container">
+			<h5><b>Code for repeated key XOR</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href="repeatedKeyXOR.tar.xz">Repeated Key Code</a></p>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;Place the given hex value to be decrypted in encrypted.py file. Run 1.py which will give you the possible key lengths, place those key lengths one by one in 2.py and run that, which will give you the flag.</p>
+		</div>
+		<div class="w3-container">
+			<h5><b>Reverse Engineering tools</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>GDB:</b> It allows you to set break points in the code and change the flow of the code, while seeing the values in the registers.</p>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.hopperapp.com/download.html">Hopper</a> This software allows you to see the pseudo code for given assembly code which makes the Reverse Engineering task much easier.</p>
+		</div>
+		<div class="w3-container">
+			<h5><b>Wireshark</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;Wireshark allows you to solve questions related to pcap files.</p>
+		</div>
+		<div class="w3-container">
+			<h5><b>Small Commands</b></h5>
+		</div>
+		<div class="w3-container">
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;strings : allows you to check the strings in the file, with grep you can find flags directly present in the file.</p>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;file : shows you the file type.</p>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;hexdump : gives you the hexadecimal values of bytes in file. The first 4 bytes of the file which are the magic numbers. Again useful for file types in questions.</p>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;ltrace : gives you detailed trace of the program running, with the functions being called and their arguments.</p>
+		</div>
+
+	</div>
+	<footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+  	<a href="index.html"><button class="w3-button w3-black w3-padding-large w3-margin-bottom">Previous</button></a>
+  	<button class="w3-button w3-black w3-disabled w3-padding-large w3-margin-bottom">Next »</button>
+	</footer>
+</body>
+</html>
