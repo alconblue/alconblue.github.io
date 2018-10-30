@@ -108,6 +108,22 @@
 		</div>
 
 		<div class="w3-container">
+			<h5><b>Example code for the attack given above</b></h5>
+		</div>
+		<div class="w3-container">
+			<center>
+				<fieldset style="background-color: lightgrey">
+			<p>&lt;script type="text/javascript"&gt;<br>
+            document.addEventListener('copy', function(e){<br>
+                console.log(e);<br>
+                e.clipboardData.setData('text/plain', 'echo "evil"\r\n');<br>
+                e.preventDefault();<br>
+            });<br>
+        &lt;/script&gt;</p></fieldset></center>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;The code given above first checks for the event copy. When the user tries to copy the data it changes the value of the clipboard which is the buffer where the copied data is stored. This data can be changed to whatever required. This command has extra \r\n appended to it, which makes sure the command is executed as soon as you paste it. (You can switch off execution of commands by newline character. The preventDefault() function makes sure that the data that we have added to the clipboard by the setData function is the one that exists and the default behaviour of copy is not carried out. The original clipboard contents can also be obtained in the same way and the new command simply prepended to the original copied command, along with a clear statement.</p>
+		</div>
+
+		<div class="w3-container">
 			<h5><b>How to protect yourself from paste jacking</b></h5>
 		</div>
 		<div class="w3-container">
