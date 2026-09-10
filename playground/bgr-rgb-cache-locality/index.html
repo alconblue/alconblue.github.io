@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Reversal That Wasn't Free — BGR→RGB Cache Locality</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0d10;
+    --panel: #101317;
+    --panel-2: #15191e;
+    --line: rgba(255,255,255,0.09);
+    --grid: rgba(255,255,255,0.03);
+    --text: #e7e5e1;
+    --muted: #868a90;
+    --site-accent: #ff8a4c;
+    --slow: #e8a33d;
+    --slow-dim: rgba(232,163,61,0.14);
+    --fast: #48c9b0;
+    --fast-dim: rgba(72,201,176,0.14);
+    --wrong: #e06a6a;
+    --serif: "Fraunces", ui-serif, Georgia, serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{ margin:0; padding:0; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body{
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px),
+                       linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 34px 34px;
+  }
+
+  .wrap{ max-width: 720px; margin: 0 auto; padding: 64px 24px 140px; }
+
+  .crumb{
+    display:inline-block;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 40px;
+    border-bottom: 1px solid transparent;
+  }
+  .crumb:hover{ color: var(--site-accent); border-color: var(--site-accent); }
+
+  h1{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(32px, 6vw, 46px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+
+  .subtitle{ color: var(--muted); font-size: 15px; max-width: 58ch; margin: 0 0 56px; }
+
+  h2{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 23px;
+    margin: 64px 0 18px;
+  }
+
+  p{ color: #c6c8cc; font-size: 14.5px; }
+
+  code{
+    font-family: var(--mono);
+    background: rgba(255,255,255,0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  .codeblock{
+    font-size: 13.5px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+  }
+  .codeblock .cb-head{
+    padding: 8px 14px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    display:flex;
+    justify-content: space-between;
+  }
+  .codeblock pre{ margin:0; padding: 16px; overflow-x:auto; }
+  .codeblock.after .cb-head{ color: var(--fast); }
+  .comment{ color: var(--muted); }
+
+  /* --- predict --- */
+  .predict{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px;
+    margin: 28px 0;
+  }
+  .predict-q{ font-size: 15px; color: var(--text); margin: 0 0 18px; }
+
+  .guesses{ display:flex; flex-direction: column; gap: 10px; }
+  .guess{
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--text);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 13px 16px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .guess:hover:not(:disabled){ border-color: var(--site-accent); }
+  .guess:disabled{ cursor: default; }
+  .guess.correct{ border-color: var(--fast); background: var(--fast-dim); color: var(--fast); }
+  .guess.wrong{ border-color: var(--wrong); background: rgba(224,106,106,0.08); color: var(--wrong); opacity: 0.75; }
+
+  .verdict{
+    display:none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+  .verdict.show{ display:block; animation: rise 0.35s ease; }
+  @keyframes rise{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform: translateY(0); } }
+  .verdict-tag{
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fast);
+    margin-bottom: 10px;
+  }
+
+  /* --- gated section --- */
+  .gated{
+    position: relative;
+    max-height: 90px;
+    overflow: hidden;
+    border-radius: 14px;
+  }
+  .gated::after{
+    content: "";
+    position: absolute; inset:0;
+    background: linear-gradient(to bottom, transparent, var(--bg) 92%);
+  }
+  .gated-note{
+    position:absolute; left:0; right:0; bottom:14px;
+    text-align:center;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+  .gated.open{ max-height: none; overflow: visible; }
+  .gated.open::after, .gated.open .gated-note{ display:none; }
+
+  /* --- simulation --- */
+  .sim{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px;
+    margin: 8px 0 8px;
+  }
+
+  .panel{ margin-bottom: 30px; }
+  .panel-label{
+    display:flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 10px; font-size: 13px;
+  }
+  .panel-label .name{ color: var(--text); font-weight: 600; }
+  .panel-label .badge{ font-size: 11px; padding: 3px 8px; border-radius: 999px; }
+  .panel.numpy .panel-label .name{ color: var(--slow); }
+  .panel.numpy .badge{ background: var(--slow-dim); color: var(--slow); }
+  .panel.opencv .panel-label .name{ color: var(--fast); }
+  .panel.opencv .badge{ background: var(--fast-dim); color: var(--fast); }
+
+  .cells{ display:flex; gap: 14px; margin-bottom: 14px; }
+  .cache-line{
+    display:flex; gap: 3px; padding: 6px;
+    border: 1px dashed var(--line); border-radius: 8px; position: relative;
+  }
+  .cache-line::after{
+    content: attr(data-line);
+    position: absolute; bottom: -20px; left:0; right:0;
+    text-align:center; font-size: 10px; color: var(--muted);
+  }
+  .cell{
+    width: 30px; height: 30px;
+    display:flex; align-items:center; justify-content:center;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    font-size: 12px; color: var(--muted);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .cell.hit{ transform: scale(1.08); }
+  .panel.numpy .cell.hit{ background: var(--slow-dim); border-color: var(--slow); color: var(--slow); }
+  .panel.opencv .cell.hit{ background: var(--fast-dim); border-color: var(--fast); color: var(--fast); }
+  .cell.visited{ color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+  .track-row{ display:flex; align-items:center; gap: 12px; margin-top: 26px; }
+  .track{ flex:1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+  .track-fill{ height: 100%; width: 0%; border-radius: 999px; transition: width 0.32s linear; }
+  .panel.numpy .track-fill{ background: var(--slow); }
+  .panel.opencv .track-fill{ background: var(--fast); }
+
+  .stat{ font-size: 12.5px; color: var(--muted); min-width: 128px; text-align: right; }
+  .panel.numpy .stat b{ color: var(--slow); }
+  .panel.opencv .stat b{ color: var(--fast); }
+
+  .controls{ display:flex; gap: 12px; margin-top: 34px; align-items:center; flex-wrap: wrap; }
+  button.ctl{
+    font-family: var(--mono); font-size: 13px;
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); padding: 10px 18px; border-radius: 8px;
+    cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  button.ctl:hover:not(:disabled){ border-color: var(--fast); color: var(--fast); }
+  button.ctl:disabled{ opacity: 0.4; cursor: default; }
+  .run-note{ font-size: 12px; color: var(--muted); }
+
+  .result-callout{
+    margin-top: 24px; padding: 16px 18px; border-radius: 10px;
+    background: var(--fast-dim); border: 1px solid rgba(72,201,176,0.3);
+    font-size: 13px; color: var(--fast); display:none;
+  }
+  .result-callout.show{ display:block; }
+
+  .disclaimer{
+    font-size: 12.5px; color: var(--muted); margin-top: 18px;
+    border-left: 2px solid var(--line); padding-left: 12px;
+  }
+
+  /* --- real numbers --- */
+  .real{ background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 28px; margin-top: 8px; }
+  .bars{ margin: 18px 0 26px; }
+  .bar-row{ margin-bottom: 16px; }
+  .bar-label{ display:flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .bar-track{ height: 14px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius: 4px; }
+  .bar-fill.small{ background: var(--slow); width: 9%; }
+  .bar-fill.big{ background: var(--muted); width: 91%; opacity:0.6; }
+
+  .impact{
+    display:flex; align-items: baseline; gap: 14px;
+    padding: 18px 20px; background: var(--fast-dim);
+    border: 1px solid rgba(72,201,176,0.3); border-radius: 10px;
+  }
+  .impact .num{ font-size: 34px; color: var(--fast); font-weight: 600; }
+  .impact .desc{ color: var(--text); font-size: 14px; }
+
+  footer{ margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 560px){
+    .cell{ width: 22px; height: 22px; font-size: 10px; }
+    .cache-line{ gap: 2px; } .cells{ gap: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="crumb" href="../../">← zoebmithaiwala.dev</a>
+
+  <h1>The Reversal That Wasn't Free</h1>
+  <p class="subtitle">
+    A one-line NumPy slice was quietly costing us milliseconds on every frame in a
+    real-time detection pipeline. Guess the bug before I show you.
+  </p>
+
+  <h2>The setup</h2>
+  <p class="lead">
+    Our vision pipeline reads frames in OpenCV's native <b>BGR</b> channel order,
+    but the detection model expects <b>RGB</b>. The obvious one-liner flips the
+    channel axis with NumPy:
+  </p>
+
+  <div class="codeblock">
+    <div class="cb-head"><span>preprocessing.py</span><span>numpy</span></div>
+    <pre><span class="comment"># reorder channels before handing the frame to the model</span>
+rgb = bgr_frame[:, :, ::-1]</pre>
+  </div>
+
+  <p>
+    NumPy doesn't touch a single byte here — no allocation, no copy, just a new
+    view with a negative stride on the channel axis. By the usual definition of
+    "free," this should be as cheap as an operation gets.
+  </p>
+
+  <div class="predict">
+    <p class="predict-q">So — what actually happens when the rest of the pipeline touches <code>rgb</code>?</p>
+    <div class="guesses" id="guesses">
+      <button class="guess" data-correct="false">It really is free — no copy, no cost.</button>
+      <button class="guess" data-correct="true">It gets slower downstream, even though nothing was copied.</button>
+      <button class="guess" data-correct="false">It silently uses more memory than the original frame.</button>
+    </div>
+
+    <div class="verdict" id="verdict">
+      <div class="verdict-tag">slower — here's why</div>
+      <p style="margin:0 0 12px;">
+        Every later step that walks this array — resizing, the copy into pinned
+        memory for the GPU transfer — expects a flat, contiguous block it can
+        process in wide chunks. A negative-stride view isn't that. It's still
+        "one array" logically, but physically the elements a routine expects to
+        find next to each other are laid out backwards. Optimized, vectorized
+        code can't take its fast path on that; it falls back to walking the
+        array one element at a time.
+      </p>
+      <div class="codeblock after">
+        <div class="cb-head"><span>preprocessing.py</span><span>opencv</span></div>
+        <pre><span class="comment"># writes a fresh, contiguous, vectorized copy</span>
+rgb = cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2RGB)</pre>
+      </div>
+      <p style="margin:0;">
+        <code>cv2.cvtColor</code> does strictly more work on paper — it actually
+        allocates and writes a new array — but does it with SIMD-optimized C++
+        that moves memory in contiguous chunks. Doing more work in a shape the
+        CPU likes beat doing "no work" in a shape it doesn't.
+      </p>
+    </div>
+  </div>
+
+  <div id="gate" class="gated">
+    <h2>Watch it happen</h2>
+    <p>
+      A simplified re-creation of how this was explained internally: 12 elements,
+      three 4-element cache lines. Watch a reversed-view walk and a vectorized
+      rewrite touch that same memory very differently.
+    </p>
+
+    <div class="sim">
+      <div class="panel numpy">
+        <div class="panel-label">
+          <span class="name">numpy: bgr_frame[:, :, ::-1]</span>
+          <span class="badge">scalar · non-contiguous stride</span>
+        </div>
+        <div class="cells" id="cells-numpy"></div>
+        <div class="track-row">
+          <div class="track"><div class="track-fill" id="track-numpy"></div></div>
+          <div class="stat" id="stat-numpy">0 / 12 elements</div>
+        </div>
+      </div>
+
+      <div class="panel opencv">
+        <div class="panel-label">
+          <span class="name">opencv: cv2.cvtColor(...)</span>
+          <span class="badge">vectorized · contiguous copy</span>
+        </div>
+        <div class="cells" id="cells-opencv"></div>
+        <div class="track-row">
+          <div class="track"><div class="track-fill" id="track-opencv"></div></div>
+          <div class="stat" id="stat-opencv">0 / 12 elements</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="ctl" id="btn-run">▶ run simulation</button>
+        <button class="ctl" id="btn-reset" disabled>↺ reset</button>
+        <span class="run-note">one element per tick vs. one cache line per tick</span>
+      </div>
+
+      <div class="result-callout" id="result">
+        done — opencv finished in <b id="result-opencv-time">–</b>,
+        numpy finished in <b id="result-numpy-time">–</b> (simulated, same tick rate)
+      </div>
+
+      <p class="disclaimer">
+        Simplified for intuition: real caches, hardware prefetchers, and NumPy's
+        actual multi-dimensional strides are messier than one row of boxes. The
+        core idea holds — contiguous, vectorizable memory access beats scattered
+        scalar access.
+      </p>
+    </div>
+
+    <h2>What it actually moved</h2>
+    <p>
+      In the real pipeline this conversion sat right before the GPU handoff.
+      Relative to the rest of that stage, it was a disproportionate chunk of the
+      budget for "just" a channel reorder:
+    </p>
+
+    <div class="real">
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-label"><span>BGR → RGB (numpy slice)</span><span>2 ms</span></div>
+          <div class="bar-track"><div class="bar-fill small"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Transfer to GPU</span><span>20 ms</span></div>
+          <div class="bar-track"><div class="bar-fill big"></div></div>
+        </div>
+      </div>
+      <div class="impact">
+        <div class="num">−20%</div>
+        <div class="desc">
+          inference latency, after replacing the array-slicing BGR→RGB conversion
+          with <code>cv2.cvtColor</code> across the pipeline.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gated-note" id="gate-note">make a guess above to unlock the simulation ↑</div>
+
+  <footer>
+    zoeb mithaiwala — systems + applied ai · part of an ongoing series on real production performance bugs
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // --- predict/reveal gate ---
+  const guesses = document.querySelectorAll('.guess');
+  const verdict = document.getElementById('verdict');
+  const gate = document.getElementById('gate');
+  const gateNote = document.getElementById('gate-note');
+
+  guesses.forEach(btn => {
+    btn.addEventListener('click', () => {
+      guesses.forEach(b => {
+        b.disabled = true;
+        b.classList.add(b.dataset.correct === 'true' ? 'correct' : 'wrong');
+      });
+      verdict.classList.add('show');
+      gate.classList.add('open');
+      gateNote.style.display = 'none';
+      setTimeout(() => gate.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+    });
+  });
+
+  // --- simulation ---
+  const N = 12;
+  const LINE_SIZE = 4;
+
+  function buildCells(containerId){
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    const cellEls = [];
+    for(let line = 0; line < N / LINE_SIZE; line++){
+      const lineEl = document.createElement('div');
+      lineEl.className = 'cache-line';
+      lineEl.setAttribute('data-line', 'line ' + line);
+      for(let i = 0; i < LINE_SIZE; i++){
+        const idx = line * LINE_SIZE + i;
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = idx;
+        lineEl.appendChild(cell);
+        cellEls[idx] = cell;
+      }
+      container.appendChild(lineEl);
+    }
+    return cellEls;
+  }
+
+  const numpyCells = buildCells('cells-numpy');
+  const opencvCells = buildCells('cells-opencv');
+
+  const TICK_MS = 380;
+  const COST_PER_ELEMENT = 5;
+  const TOTAL_COST = N * COST_PER_ELEMENT;
+
+  const trackNumpy = document.getElementById('track-numpy');
+  const trackOpencv = document.getElementById('track-opencv');
+  const statNumpy = document.getElementById('stat-numpy');
+  const statOpencv = document.getElementById('stat-opencv');
+  const btnRun = document.getElementById('btn-run');
+  const btnReset = document.getElementById('btn-reset');
+  const result = document.getElementById('result');
+
+  let timers = [];
+  let numpyDone = false, opencvDone = false;
+  let numpyTicks = 0, opencvTicks = 0;
+
+  function clearHighlights(cells){ cells.forEach(c => c.classList.remove('hit')); }
+
+  function resetAll(){
+    timers.forEach(t => clearTimeout(t));
+    timers = [];
+    numpyDone = false; opencvDone = false;
+    numpyTicks = 0; opencvTicks = 0;
+    [numpyCells, opencvCells].forEach(cells => cells.forEach(c => c.classList.remove('hit','visited')));
+    trackNumpy.style.width = '0%';
+    trackOpencv.style.width = '0%';
+    statNumpy.textContent = '0 / 12 elements';
+    statOpencv.textContent = '0 / 12 elements';
+    result.classList.remove('show');
+    btnRun.disabled = false;
+    btnReset.disabled = true;
+  }
+
+  function maybeFinish(){
+    if(numpyDone && opencvDone){
+      document.getElementById('result-numpy-time').textContent = (numpyTicks * TICK_MS / 1000).toFixed(2) + 's';
+      document.getElementById('result-opencv-time').textContent = (opencvTicks * TICK_MS / 1000).toFixed(2) + 's';
+      result.classList.add('show');
+      btnReset.disabled = false;
+    }
+  }
+
+  function stepNumpy(){
+    if(numpyTicks >= N){ numpyDone = true; maybeFinish(); return; }
+    clearHighlights(numpyCells);
+    const physicalIdx = (N - 1) - numpyTicks;
+    numpyCells[physicalIdx].classList.add('hit','visited');
+    numpyTicks++;
+    trackNumpy.style.width = Math.min(100, (numpyTicks * COST_PER_ELEMENT / TOTAL_COST) * 100) + '%';
+    statNumpy.textContent = numpyTicks + ' / 12 elements';
+    if(numpyTicks < N){ timers.push(setTimeout(stepNumpy, TICK_MS)); }
+    else{ setTimeout(() => { clearHighlights(numpyCells); numpyDone = true; maybeFinish(); }, TICK_MS); }
+  }
+
+  function stepOpencv(){
+    const groupsTotal = N / LINE_SIZE;
+    if(opencvTicks >= groupsTotal){ opencvDone = true; maybeFinish(); return; }
+    clearHighlights(opencvCells);
+    const start = opencvTicks * LINE_SIZE;
+    for(let i = start; i < start + LINE_SIZE; i++){ opencvCells[i].classList.add('hit','visited'); }
+    opencvTicks++;
+    const elementsDone = Math.min(N, opencvTicks * LINE_SIZE);
+    trackOpencv.style.width = Math.min(100, (opencvTicks * LINE_SIZE * COST_PER_ELEMENT / TOTAL_COST) * 100) + '%';
+    statOpencv.textContent = elementsDone + ' / 12 elements';
+    if(opencvTicks < groupsTotal){ timers.push(setTimeout(stepOpencv, TICK_MS)); }
+    else{ setTimeout(() => { clearHighlights(opencvCells); opencvDone = true; maybeFinish(); }, TICK_MS); }
+  }
+
+  btnRun.addEventListener('click', () => {
+    resetAll();
+    btnRun.disabled = true;
+    timers.push(setTimeout(stepNumpy, TICK_MS));
+    timers.push(setTimeout(stepOpencv, TICK_MS));
+  });
+
+  btnReset.addEventListener('click', resetAll);
+})();
+</script>
+
+</body>
+</html>

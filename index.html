@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoeb Mithaiwala</title>
+<meta name="description" content="Systems engineer turned applied AI researcher. Distributed infrastructure at Google, real-time inference at Ambient.ai.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #08090c;
+    --line: rgba(255,255,255,0.09);
+    --text: #e9e7e2;
+    --text-dim: #b6bac0;
+    --muted: #868a92;
+    --accent: #ff8a4c;
+    --accent-dim: rgba(255,138,76,0.16);
+    --accent2: #a3b0ae;
+    --accent2-dim: rgba(163,176,174,0.16);
+    --serif: "Fraunces", ui-serif, Georgia, serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    /* spacing scale (4px base) */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-8: 32px;
+    --sp-10: 40px;
+    --sp-12: 48px;
+    --sp-16: 64px;
+    --sp-20: 80px;
+    --sp-24: 96px;
+    --sp-30: 120px;
+
+    /* page gutter, shrinks on small screens below */
+    --gutter: clamp(24px, 6vw, 64px);
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection{ background: var(--accent-dim); color: var(--accent); }
+
+  .grain{
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  #net{
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display:block;
+  }
+
+  .hero-fade{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, transparent 45%, var(--bg) 96%);
+    pointer-events:none;
+  }
+
+  .hero-inner{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 980px;
+    margin: 0;
+    padding: 0 var(--gutter) 9vh;
+  }
+
+  h1{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(52px, 10vw, 118px);
+    line-height: 0.94;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--sp-6);
+    text-wrap: balance;
+    max-width: 14ch;
+  }
+
+  .role{
+    font-size: 16px;
+    color: #c9cdd3;
+    margin: 0 0 var(--sp-6);
+    min-height: 1.4em;
+  }
+  .role .cursor-blink{
+    display:inline-block;
+    width: 8px; height: 1em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: -2px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  .bio{ max-width: 65ch; margin: 0 0 var(--sp-10); }
+  .bio-line{
+    color: var(--text-dim);
+    font-size: 14px;
+    margin: 0 0 var(--sp-2);
+  }
+  .bio-line:first-child{ color: var(--text); }
+  .bio-line b{ color: var(--accent2); font-weight: 600; }
+
+  .links{
+    display:flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    font-size: 13px;
+    margin-top: var(--sp-12);
+  }
+  .links a{
+    color: var(--text);
+    text-decoration: none;
+    padding: var(--sp-2) var(--sp-1);
+    position: relative;
+  }
+  .links a::before{ content: "["; color: var(--muted); margin-right: 2px; }
+  .links a::after{ content: "]"; color: var(--muted); margin-left: 2px; }
+  .links a:hover{ color: var(--accent); }
+  .links a:hover::before, .links a:hover::after{ color: var(--accent); }
+
+  /* ---------- content below hero ---------- */
+  .wrap{ max-width: 720px; margin: 0; padding: var(--sp-24) var(--gutter) var(--sp-30); }
+
+  h2.section{
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  .section-note{
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 var(--sp-8);
+    padding-bottom: var(--sp-5);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .lab-list{ display:flex; flex-direction: column; }
+
+  .lab-item{
+    display:block;
+    text-decoration:none;
+    color: inherit;
+    padding: var(--sp-6) 0;
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .lab-item.in{ opacity: 1; transform: translateY(0); }
+
+  .lab-row{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--sp-4);
+  }
+  .lab-title{
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    transition: color 0.15s ease;
+  }
+  .lab-item:hover .lab-title{ color: var(--accent); }
+  .lab-tag{ font-size: 11px; color: var(--muted); white-space: nowrap; letter-spacing: 0.04em; }
+  .lab-desc{ font-size: 14px; color: var(--text-dim); margin-top: var(--sp-2); max-width: 65ch; }
+
+  .lab-underline{
+    height: 1px;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.3s ease;
+    margin-top: var(--sp-3);
+  }
+  .lab-item:hover .lab-underline{ width: 46px; }
+
+  .lab-empty{ font-size: 13px; color: var(--muted); padding: var(--sp-6) 0; }
+
+  .journey-cta{
+    margin-top: var(--sp-2);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .journey-link{
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 3px;
+  }
+  .journey-link:hover{ color: var(--accent); border-color: var(--accent); }
+  .journey-link .arrow{ display: inline-block; transition: transform 0.15s ease; }
+  .journey-link:hover .arrow{ transform: translateX(3px) rotate(-8deg); }
+
+  footer{ margin-top: var(--sp-8); color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 560px){
+    .hero{ align-items: flex-end; }
+    h1{ font-size: clamp(40px, 14vw, 60px); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  /* ---------- page transition: pivot to a star, then zoom ---------- */
+  #page-root{ transform-origin: 50% 50%; }
+  html.vt-animating, html.vt-animating body{ overflow: hidden; }
+
+  #transition-star{
+    position: fixed;
+    top: 0; left: 0;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, var(--accent) 30%, rgba(255,138,76,0) 72%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+</style>
+</head>
+<body>
+<canvas class="grain" id="grain"></canvas>
+<div id="transition-star"></div>
+<div id="page-root">
+
+<section class="hero">
+  <canvas id="net"></canvas>
+  <div class="hero-fade"></div>
+  <div class="hero-inner">
+    <h1>Zoeb<br>Mithaiwala</h1>
+    <p class="role" id="role"><span id="role-text"></span><span class="cursor-blink"></span></p>
+    <div class="bio">
+      <p class="bio-line">Jack of all trades.</p>
+      <p class="bio-line">2012: fell hard for computers. <b>NITK</b> gave it a CS degree to back it up.</p>
+      <p class="bio-line">Cut my teeth on NLP: pre-GPT chatbots powered by BERT, at <b>Morgan Stanley</b>.</p>
+      <p class="bio-line">Four years at <b>Google</b>, moving files around at a genuinely absurd scale.</p>
+      <p class="bio-line">Now tinkering at <b>Ambient.ai</b>: video, streaming, GPUs, infra, inference, and everything in between.</p>
+    </div>
+    <p class="journey-cta">see my <a class="journey-link" href="./journey/">journey <span class="arrow">→</span></a></p>
+  </div>
+</section>
+
+<div class="wrap">
+  <h2 class="section">lab</h2>
+  <p class="section-note">interactive write-ups on real production bugs and side builds</p>
+
+  <div class="lab-list" id="lab-list">
+    <a class="lab-item" href="./playground/bgr-rgb-cache-locality/">
+      <div class="lab-row">
+        <span class="lab-title">The Reversal That Wasn't Free</span>
+        <span class="lab-tag">systems · memory</span>
+      </div>
+      <div class="lab-desc">
+        Why a "free" NumPy slice quietly cost more than a real OpenCV copy. An
+        interactive look at cache locality in a production vision pipeline.
+      </div>
+      <div class="lab-underline"></div>
+    </a>
+  </div>
+
+  <div class="links">
+    <a href="mailto:zoebmithaiwala1@gmail.com">email</a>
+    <a href="https://www.linkedin.com/in/zoeb-mithaiwala-34447b146" target="_blank" rel="noopener">linkedin</a>
+    <a href="https://github.com/alconblue" target="_blank" rel="noopener">github</a>
+  </div>
+
+  <footer>more of these are on the way</footer>
+</div>
+</div>
+
+<script>
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- grain texture ---------- */
+  (function grain(){
+    const c = document.getElementById('grain');
+    const size = 128;
+    c.width = size; c.height = size;
+    c.style.width = '100vw'; c.style.height = '100vh';
+    const ctx = c.getContext('2d');
+    const imgData = ctx.createImageData(size, size);
+    for(let i = 0; i < imgData.data.length; i += 4){
+      const v = Math.random() * 255;
+      imgData.data[i] = v; imgData.data[i+1] = v; imgData.data[i+2] = v; imgData.data[i+3] = 255;
+    }
+    ctx.putImageData(imgData, 0, 0);
+  })();
+
+  /* ---------- cycling typewriter role text ---------- */
+  (function typewriter(){
+    const roles = [
+      "Backend Software Engineer",
+      "Systems Engineer",
+      "ML Infra Engineer",
+      "Applied Research Scientist"
+    ];
+    const el = document.getElementById('role-text');
+    if(reduceMotion){ el.textContent = roles[roles.length - 1]; return; }
+
+    const TYPE_MS = 120;
+    const DELETE_MS = 65;
+    const HOLD_MS = 1400;
+    let roleIndex = 0;
+
+    function typeRole(){
+      const word = roles[roleIndex];
+      let i = 0;
+      (function typeChar(){
+        el.textContent = word.slice(0, i);
+        i++;
+        if(i <= word.length){
+          setTimeout(typeChar, TYPE_MS);
+        } else {
+          setTimeout(deleteRole, HOLD_MS);
+        }
+      })();
+    }
+
+    function deleteRole(){
+      const word = roles[roleIndex];
+      let i = word.length;
+      (function deleteChar(){
+        el.textContent = word.slice(0, i);
+        i--;
+        if(i >= 0){
+          setTimeout(deleteChar, DELETE_MS);
+        } else {
+          roleIndex = (roleIndex + 1) % roles.length;
+          setTimeout(typeRole, 200);
+        }
+      })();
+    }
+
+    typeRole();
+  })();
+
+  /* ---------- network canvas ---------- */
+  (function network(){
+    const canvas = document.getElementById('net');
+    const hero = document.querySelector('.hero');
+    const ctx = canvas.getContext('2d');
+    let W, H, dpr;
+    let nodes = [];
+    let pulses = [];
+    const NODE_COUNT = 34;
+    const LINK_DIST = 170;
+    const mouse = { x: -9999, y: -9999 };
+
+    function resize(){
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = hero.clientWidth; H = hero.clientHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    const PULSE_COLORS = ["255,138,76", "163,176,174"];
+    let frameCount = 0;
+
+    function initNodes(){
+      nodes = [];
+      for(let i = 0; i < NODE_COUNT; i++){
+        nodes.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.18,
+          vy: (Math.random() - 0.5) * 0.18,
+          r: 1.4 + Math.random() * 1.4,
+          phase: Math.random() * Math.PI * 2,
+          twinkleSpeed: 0.012 + Math.random() * 0.02
+        });
+      }
+    }
+
+    function spawnPulse(){
+      if(nodes.length < 2) return;
+      const a = nodes[Math.floor(Math.random() * nodes.length)];
+      let b = a, tries = 0;
+      while(b === a && tries < 10){
+        const cand = nodes[Math.floor(Math.random() * nodes.length)];
+        const d = Math.hypot(cand.x - a.x, cand.y - a.y);
+        if(d < LINK_DIST * 1.4) b = cand;
+        tries++;
+      }
+      if(b === a) return;
+      const color = PULSE_COLORS[Math.floor(Math.random() * PULSE_COLORS.length)];
+      pulses.push({ a, b, t: 0, speed: 0.006 + Math.random() * 0.006, color });
+    }
+
+    function step(){
+      frameCount++;
+      nodes.forEach(n => {
+        n.x += n.vx; n.y += n.vy;
+        if(n.x < 0 || n.x > W) n.vx *= -1;
+        if(n.y < 0 || n.y > H) n.vy *= -1;
+
+        const dx = n.x - mouse.x, dy = n.y - mouse.y;
+        const d = Math.hypot(dx, dy);
+        if(d < 120){
+          const f = (120 - d) / 120 * 0.06;
+          n.x += (dx / d) * f * 10;
+          n.y += (dy / d) * f * 10;
+        }
+      });
+
+      ctx.clearRect(0, 0, W, H);
+
+      for(let i = 0; i < nodes.length; i++){
+        for(let j = i + 1; j < nodes.length; j++){
+          const a = nodes[i], b = nodes[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if(d < LINK_DIST){
+            ctx.strokeStyle = `rgba(140,165,196,${(1 - d / LINK_DIST) * 0.22})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      nodes.forEach(n => {
+        const twinkle = 0.35 + 0.35 * (0.5 + 0.5 * Math.sin(frameCount * n.twinkleSpeed + n.phase));
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(180,195,215,${twinkle})`;
+        ctx.fill();
+      });
+
+      pulses.forEach(p => { p.t += p.speed; });
+      pulses = pulses.filter(p => p.t <= 1);
+      pulses.forEach(p => {
+        const x = p.a.x + (p.b.x - p.a.x) * p.t;
+        const y = p.a.y + (p.b.y - p.a.y) * p.t;
+        const fade = Math.sin(p.t * Math.PI);
+        ctx.beginPath();
+        ctx.arc(x, y, 2.4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color},${0.85 * fade})`;
+        ctx.shadowColor = `rgba(${p.color},0.8)`;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      if(!reduceMotion) requestAnimationFrame(step);
+    }
+
+    resize();
+    initNodes();
+
+    window.__pickStar = function(){
+      if(!nodes.length) return { x: 50, y: 50 };
+      const n = nodes[Math.floor(Math.random() * nodes.length)];
+      return { x: (n.x / W * 100).toFixed(1), y: (n.y / H * 100).toFixed(1) };
+    };
+
+    window.addEventListener('resize', () => { resize(); initNodes(); });
+    hero.addEventListener('mousemove', e => {
+      const rect = hero.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    hero.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+
+    if(reduceMotion){
+      step();
+    } else {
+      requestAnimationFrame(step);
+      setInterval(spawnPulse, 900);
+    }
+  })();
+
+  /* ---------- scroll reveal for lab items ---------- */
+  (function reveal(){
+    const items = document.querySelectorAll('.lab-item');
+    if(!('IntersectionObserver' in window) || reduceMotion){
+      items.forEach(i => i.classList.add('in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    items.forEach(i => io.observe(i));
+  })();
+
+  /* ---------- pivot, then journey into a star (one-way) ---------- */
+  (function pageTransitions(){
+    const root = document.getElementById('page-root');
+    const star = document.getElementById('transition-star');
+
+    function pivotZoomAndNavigate(px, py, href){
+      if(reduceMotion){ window.location.href = href; return; }
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const dx = vw / 2 - px, dy = vh / 2 - py;
+      const big = Math.max(vw, vh) * 2.8;
+      document.documentElement.classList.add('vt-animating');
+
+      root.animate([
+        { transform: 'translate(0px,0px) scale(1)', opacity: 1, offset: 0, easing: 'cubic-bezier(0.4,0,0.2,1)' },
+        { transform: `translate(${dx}px,${dy}px) scale(1)`, opacity: 1, offset: 0.4, easing: 'ease-in' },
+        { transform: `translate(${dx}px,${dy}px) scale(1.05)`, opacity: 0.15, offset: 0.82 },
+        { transform: `translate(${dx}px,${dy}px) scale(1.07)`, opacity: 0, offset: 1 }
+      ], { duration: 2800, fill: 'forwards' });
+
+      star.style.left = px + 'px';
+      star.style.top = py + 'px';
+      star.style.filter = 'brightness(1)';
+      const anim = star.animate([
+        // drift toward it: pan to center, barely growing yet
+        { left: `${px}px`, top: `${py}px`, width: '10px', height: '10px', opacity: 0.9, filter: 'brightness(1)', offset: 0, easing: 'cubic-bezier(0.4,0,0.2,1)' },
+        { left: `${vw/2}px`, top: `${vh/2}px`, width: '16px', height: '16px', opacity: 1, filter: 'brightness(1)', offset: 0.4, easing: 'cubic-bezier(0.7,0,0.84,0)' },
+        // long, slow approach: still distant, growing gently
+        { left: `${vw/2}px`, top: `${vh/2}px`, width: '46px', height: '46px', opacity: 1, filter: 'brightness(1)', offset: 0.72, easing: 'cubic-bezier(0.75,0,0.9,0.15)' },
+        // the jump: it rushes at you
+        { left: `${vw/2}px`, top: `${vh/2}px`, width: big + 'px', height: big + 'px', opacity: 1, filter: 'brightness(1.6)', offset: 1 }
+      ], { duration: 2800, fill: 'forwards' });
+
+      anim.onfinish = () => { window.location.href = href; };
+    }
+
+    const link = document.querySelector('.journey-link');
+    if(link){
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        const s = window.__pickStar ? window.__pickStar() : { x: 50, y: 50 };
+        const heroRect = document.querySelector('.hero').getBoundingClientRect();
+        const px = heroRect.left + (s.x / 100) * heroRect.width;
+        const py = heroRect.top + (s.y / 100) * heroRect.height;
+        sessionStorage.setItem('vt-dir', 'forward');
+        pivotZoomAndNavigate(px, py, href);
+      });
+    }
+  })();
+})();
+</script>
+
+</body>
+</html>
