@@ -11,6 +11,7 @@
 <style>
   :root{
     --bg: #08090c;
+    --panel: #101319;
     --line: rgba(255,255,255,0.09);
     --text: #e9e7e2;
     --text-dim: #b6bac0;
@@ -98,7 +99,7 @@
   h1{
     font-family: var(--serif);
     font-weight: 500;
-    font-size: clamp(52px, 10vw, 118px);
+    font-size: clamp(38px, 7vw, 82px);
     line-height: 0.94;
     letter-spacing: -0.015em;
     margin: 0 0 var(--sp-6);
@@ -122,14 +123,81 @@
   }
   @keyframes blink{ 50%{ opacity: 0; } }
 
-  .bio{ max-width: 65ch; margin: 0 0 var(--sp-10); }
-  .bio-line{
-    color: var(--text-dim);
-    font-size: 14px;
-    margin: 0 0 var(--sp-2);
+  .bio-term{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 0 var(--sp-10);
   }
-  .bio-line:first-child{ color: var(--text); }
-  .bio-line b{ color: var(--accent2); font-weight: 600; }
+  .bio-term-bar{
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .bio-term-dot{ width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .bio-term-dot.r{ background: #ff5f56; }
+  .bio-term-dot.y{ background: #ffbd2e; }
+  .bio-term-dot.g{ background: #27c93f; }
+  .bio-term-title{ margin-left: var(--sp-2); font-size: 11px; color: var(--muted); letter-spacing: 0.03em; }
+  .bio-term-actions{ margin-left: auto; display: flex; gap: var(--sp-2); }
+  .bio-term-btn{
+    font-family: var(--mono);
+    font-size: 11px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .bio-term-btn:hover{ color: var(--accent); border-color: var(--accent); }
+
+  .bio-term-output{
+    padding: var(--sp-4) var(--sp-5) var(--sp-2);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-height: 340px;
+    overflow-y: auto;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .bio-term-hint{ color: var(--muted); }
+  .bio-term-echo{ color: var(--text); }
+  .bio-term-echo .p{ color: var(--accent); }
+  .bio-term-err{ color: #e06a6a; }
+  .bio-term-out{ color: var(--text); }
+
+  .bio-term-inputrow{
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-5) var(--sp-4);
+    font-size: 13px;
+  }
+  .bio-term-prompt{ color: var(--accent); flex-shrink: 0; }
+  .bio-term-input{
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    caret-color: var(--accent);
+  }
+  .bio-term-input:disabled{ opacity: 0.5; }
+
+  .c-pp{ color: var(--muted); }
+  .c-kw{ color: var(--accent2); }
+  .c-id{ color: var(--accent); }
+  .c-str{ color: var(--text); }
+  .c-ink{ color: var(--text); font-weight: 600; }
+  .c-dim{ color: var(--muted); }
+  .bio-term-code{ font-size: 12px; line-height: 1.5; }
 
   .links{
     display:flex;
@@ -228,7 +296,7 @@
 
   @media (max-width: 560px){
     .hero{ align-items: flex-end; }
-    h1{ font-size: clamp(40px, 14vw, 60px); }
+    h1{ font-size: clamp(30px, 11vw, 46px); }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -263,12 +331,20 @@
   <div class="hero-inner">
     <h1>Zoeb<br>Mithaiwala</h1>
     <p class="role" id="role"><span id="role-text"></span><span class="cursor-blink"></span></p>
-    <div class="bio">
-      <p class="bio-line">Jack of all trades.</p>
-      <p class="bio-line">2012: fell hard for computers. <b>NITK</b> gave it a CS degree to back it up.</p>
-      <p class="bio-line">Cut my teeth on NLP: pre-GPT chatbots powered by BERT, at <b>Morgan Stanley</b>.</p>
-      <p class="bio-line">Four years at <b>Google</b>, moving files around at a genuinely absurd scale.</p>
-      <p class="bio-line">Now tinkering at <b>Ambient.ai</b>: video, streaming, GPUs, infra, inference, and everything in between.</p>
+    <div class="bio-term" id="bio-term">
+      <div class="bio-term-bar">
+        <span class="bio-term-dot r"></span><span class="bio-term-dot y"></span><span class="bio-term-dot g"></span>
+        <span class="bio-term-title">zoeb@bio:~</span>
+        <div class="bio-term-actions">
+          <button class="bio-term-btn" id="bio-play" type="button">▶ play</button>
+          <button class="bio-term-btn" id="bio-reset" type="button">↺ reset</button>
+        </div>
+      </div>
+      <div class="bio-term-output" id="bio-output"><span class="bio-term-hint">try: ls, gcc, cat, ./bio, clear — or hit play</span></div>
+      <div class="bio-term-inputrow">
+        <span class="bio-term-prompt">zoeb@bio:~$</span>
+        <input class="bio-term-input" id="bio-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
     </div>
     <p class="journey-cta">see my <a class="journey-link" href="./journey/">journey <span class="arrow">→</span></a></p>
   </div>
@@ -504,6 +580,202 @@
       requestAnimationFrame(step);
       setInterval(spawnPulse, 900);
     }
+  })();
+
+  /* ---------- the bio terminal: a real (tiny) shell ---------- */
+  (function bioTerminal(){
+    const KEY = "gpu";
+    const BYTES = [
+      0x2f,0x19,0x59,0x47,0x39,0x52,0x0a,0x50,0x2f,0x08,0x15,0x17,0x47,0x3d,0x1c,0x13,
+      0x18,0x14,0x0e,0x07,0x14,0x0b,0x11,0x54,0x47,0x27,0x10,0x0b,0x13,0x1a,0x0a,0x15,
+      0x55,0x13,0x1f,0x55,0x0a,0x09,0x55,0x10,0x1f,0x07,0x0b,0x14,0x5b,0x6d,0x38,0x10,
+      0x15,0x15,0x52,0x14,0x50,0x06,0x08,0x1d,0x10,0x47,0x19,0x1b,0x01,0x1f,0x07,0x0a,
+      0x11,0x01,0x0e,0x1f,0x1b,0x47,0x11,0x17,0x08,0x05,0x01,0x47,0x1d,0x10,0x5d,0x50,
+      0x3c,0x40,0x1d,0x55,0x06,0x50,0x1f,0x06,0x13,0x1e,0x47,0x1f,0x13,0x47,0x11,0x19,
+      0x0b,0x50,0x01,0x15,0x11,0x11,0x02,0x03,0x59,0x47,0x11,0x1b,0x03,0x50,0x18,0x06,
+      0x03,0x01,0x02,0x02,0x55,0x08,0x16,0x55,0x14,0x1f,0x18,0x02,0x5e,0x7f,0x2e,0x50,
+      0x13,0x02,0x1c,0x19,0x47,0x19,0x1b,0x47,0x1c,0x1a,0x11,0x15,0x55,0x10,0x19,0x01,
+      0x0f,0x50,0x16,0x08,0x1d,0x05,0x12,0x04,0x10,0x15,0x03,0x55,0x0e,0x1e,0x55,0x55,
+      0x40,0x44,0x55,0x5c,0x55,0x06,0x1e,0x11,0x47,0x17,0x1a,0x13,0x50,0x14,0x47,0x14,
+      0x10,0x00,0x02,0x10,0x02,0x50,0x13,0x15,0x1f,0x18,0x47,0x3e,0x3c,0x33,0x3b,0x55,
+      0x13,0x1f,0x55,0x05,0x11,0x16,0x0c,0x50,0x1c,0x13,0x50,0x00,0x17,0x5e,0x7f,0x34,
+      0x04,0x14,0x15,0x04,0x10,0x03,0x50,0x1a,0x12,0x04,0x55,0x0e,0x1e,0x55,0x29,0x3c,
+      0x25,0x5d,0x50,0x05,0x15,0x15,0x58,0x20,0x20,0x21,0x47,0x13,0x1d,0x06,0x04,0x17,
+      0x08,0x04,0x06,0x47,0x00,0x1a,0x10,0x15,0x07,0x02,0x14,0x55,0x05,0x09,0x55,0x25,
+      0x35,0x27,0x33,0x5c,0x55,0x06,0x04,0x55,0x2a,0x1f,0x07,0x00,0x11,0x1b,0x47,0x23,
+      0x01,0x06,0x1e,0x19,0x02,0x09,0x5b,0x6d,0x36,0x1a,0x12,0x02,0x55,0x1e,0x15,0x14,
+      0x15,0x03,0x55,0x06,0x04,0x55,0x20,0x1f,0x1a,0x00,0x1c,0x10,0x4b,0x50,0x18,0x08,
+      0x06,0x1c,0x09,0x17,0x55,0x01,0x19,0x19,0x02,0x03,0x55,0x06,0x02,0x1a,0x12,0x1e,
+      0x11,0x47,0x11,0x01,0x47,0x11,0x55,0x00,0x15,0x1b,0x12,0x19,0x1b,0x02,0x1c,0x0c,
+      0x47,0x11,0x17,0x14,0x05,0x07,0x03,0x50,0x06,0x04,0x11,0x19,0x02,0x5e,0x7f,0x29,
+      0x1f,0x02,0x47,0x04,0x1c,0x09,0x1b,0x10,0x15,0x19,0x1b,0x00,0x50,0x14,0x13,0x50,
+      0x34,0x0a,0x12,0x1c,0x02,0x1e,0x01,0x49,0x11,0x1c,0x5d,0x50,0x03,0x0e,0x14,0x10,
+      0x08,0x5c,0x55,0x14,0x04,0x07,0x02,0x11,0x18,0x0e,0x1e,0x12,0x4b,0x50,0x32,0x37,
+      0x25,0x06,0x4b,0x50,0x1c,0x09,0x16,0x07,0x06,0x5c,0x55,0x0e,0x1e,0x13,0x02,0x02,
+      0x10,0x09,0x13,0x10,0x4b,0x50,0x14,0x09,0x14,0x55,0x02,0x06,0x10,0x15,0x09,0x01,
+      0x0f,0x19,0x1b,0x00,0x50,0x1c,0x09,0x50,0x17,0x02,0x04,0x02,0x02,0x15,0x1b,0x49,
+      0x7a
+    ];
+
+    // lay the first 138 bytes out in a 23x14 dot-matrix grid that reads "ZOEB"
+    // when cat'd -- the rest continue as an ordinary dense hex dump below it.
+    function buildSourceHTML(){
+      const FONT = {
+        Z: ['11111','00001','00010','00100','01000','10000','11111'],
+        O: ['01110','10001','10001','10001','10001','10001','01110'],
+        E: ['11111','10000','10000','11110','10000','10000','11111'],
+        B: ['11110','10001','10001','11110','10001','10001','11110']
+      };
+      const WORD = ['Z','O','E','B'];
+      const grid = [];
+      for(let r = 0; r < 7; r++){
+        let row = '';
+        WORD.forEach((L, li) => { row += FONT[L][r]; if(li < WORD.length - 1) row += '0'; });
+        grid.push(row);
+      }
+
+      // dense pack: every cell gets a real byte, "ink" cells just render bright
+      // and everything else dim -- the ZOEB shape reads via color, not gaps.
+      let idx = 0;
+      const artLines = grid.map(row => {
+        let line = '';
+        for(const ch of row){
+          const b = BYTES[idx++];
+          const tok = '0x' + b.toString(16).padStart(2, '0') + ',';
+          line += '<span class="' + (ch === '1' ? 'c-ink' : 'c-dim') + '">' + tok + '</span>';
+        }
+        return line;
+      });
+
+      const rest = BYTES.slice(idx);
+      const restLines = [];
+      for(let i = 0; i < rest.length; i += 16){
+        restLines.push('<span class="c-dim">' + rest.slice(i, i + 16).map(b => '0x' + b.toString(16).padStart(2, '0')).join(',') + ',</span>');
+      }
+
+      return '<span class="c-pp">#include &lt;stdio.h&gt;</span>\n'
+        + '<span class="c-pp">#define R putchar</span>\n'
+        + '<span class="c-kw">static</span> <span class="c-kw">char</span> *<span class="c-id">K</span>=<span class="c-str">"gpu"</span>;\n'
+        + '<span class="c-kw">static</span> <span class="c-kw">unsigned</span> <span class="c-kw">char</span> <span class="c-id">M</span>[]={\n'
+        + artLines.join('\n') + '\n'
+        + restLines.join('\n') + '};\n'
+        + '<span class="c-kw">int</span> <span class="c-id">main</span>(<span class="c-kw">int</span> c,<span class="c-kw">char</span>**v){<span class="c-kw">int</span> i;<span class="c-kw">for</span>(i=0;i&lt;<span class="c-kw">sizeof</span> <span class="c-id">M</span>;i++)<span class="c-id">R</span>(<span class="c-id">M</span>[i]^<span class="c-id">K</span>[i%3]);<span class="c-kw">return</span>!c;}';
+    }
+
+    const SOURCE_HTML = '<code class="bio-term-code">' + buildSourceHTML() + '</code>';
+
+    function decodeBio(){
+      let out = '';
+      for(let i = 0; i < BYTES.length; i++){
+        out += String.fromCharCode(BYTES[i] ^ KEY.charCodeAt(i % KEY.length));
+      }
+      return out;
+    }
+
+    const term = document.getElementById('bio-term');
+    const output = document.getElementById('bio-output');
+    const input = document.getElementById('bio-input');
+    const playBtn = document.getElementById('bio-play');
+    const resetBtn = document.getElementById('bio-reset');
+    if(!term) return;
+
+    let compiled = false;
+    let busy = false;
+
+    function escapeHtml(s){
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function printLine(html, cls){
+      const div = document.createElement('div');
+      if(cls) div.className = cls;
+      div.innerHTML = html;
+      output.appendChild(div);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function resetOutput(){
+      output.innerHTML = '<span class="bio-term-hint">try: ls, gcc, cat, ./bio, clear — or hit play</span>';
+    }
+
+    function doReset(){
+      compiled = false;
+      resetOutput();
+    }
+
+    function execute(raw){
+      const cmd = raw.trim();
+      printLine('<span class="p">zoeb@bio:~$</span> ' + escapeHtml(cmd), 'bio-term-echo');
+      if(cmd === '') return;
+
+      if(cmd === 'ls'){
+        printLine(compiled ? 'bio&nbsp;&nbsp;bio.c' : 'bio.c', 'bio-term-out');
+      } else if(cmd.indexOf('gcc') === 0){
+        compiled = true; // real gcc is silent on success too
+      } else if(cmd.indexOf('cat') === 0){
+        printLine(SOURCE_HTML);
+      } else if(cmd === './bio'){
+        if(!compiled){
+          printLine('bash: ./bio: No such file or directory', 'bio-term-err');
+        } else {
+          decodeBio().split('\n').filter(Boolean).forEach(l => printLine(escapeHtml(l), 'bio-term-out'));
+        }
+      } else if(cmd === 'clear'){
+        doReset();
+      } else {
+        printLine('only these commands are supported: ls, gcc, cat, ./bio, clear', 'bio-term-hint');
+      }
+    }
+
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' && !busy){
+        const val = input.value;
+        input.value = '';
+        execute(val);
+      }
+    });
+
+    term.addEventListener('click', (e) => {
+      if(e.target.tagName !== 'BUTTON') input.focus();
+    });
+
+    function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+    async function typeCommand(text){
+      input.value = '';
+      if(reduceMotion){
+        input.value = text;
+      } else {
+        for(let i = 0; i < text.length; i++){
+          input.value += text[i];
+          await wait(26);
+        }
+      }
+      await wait(220);
+      execute(text);
+      input.value = '';
+      await wait(reduceMotion ? 60 : 320);
+    }
+
+    playBtn.addEventListener('click', async () => {
+      if(busy) return;
+      busy = true;
+      input.disabled = true;
+      compiled = false;
+      resetOutput();
+      const sequence = ['ls', 'gcc -o bio bio.c', 'ls', 'cat bio.c', './bio'];
+      for(const c of sequence){ await typeCommand(c); }
+      input.disabled = false;
+      busy = false;
+      input.focus();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if(busy) return;
+      doReset();
+      input.value = '';
+      input.focus();
+    });
   })();
 
   /* ---------- scroll reveal for lab items ---------- */
