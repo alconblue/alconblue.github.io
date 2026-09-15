@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Journey — Zoeb Mithaiwala</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <script>
 (function(){
   if(sessionStorage.getItem('vt-dir') === 'forward'){
@@ -131,6 +132,7 @@
     color: var(--muted);
     text-transform: uppercase;
     margin-bottom: var(--sp-2);
+    transition: opacity 0.35s ease;
   }
 
   .entry-title{
@@ -138,18 +140,32 @@
     font-size: 22px;
     font-weight: 500;
     margin: 0 0 4px;
+    transform-origin: left top;
+    transition: color 0.35s ease, transform 0.35s ease;
   }
   .entry-org{
     font-size: 13px;
     color: var(--accent);
     margin-bottom: var(--sp-2);
+    transition: color 0.35s ease, opacity 0.35s ease;
   }
   .entry-desc{
     font-size: 14px;
     color: var(--text-dim);
     max-width: 65ch;
+    transform-origin: left top;
+    transition: color 0.35s ease, transform 0.35s ease;
   }
   .entry.personal .entry-desc{ color: var(--muted); font-style: italic; }
+
+  /* only the entry currently in focus reads at full size/contrast --
+     size changes via transform (not font-size) so the text always wraps
+     at one fixed size and never reflows between states */
+  .entry:not(.focus) .entry-date{ opacity: 0.55; }
+  .entry:not(.focus) .entry-title{ transform: scale(0.818); color: var(--muted); }
+  .entry:not(.focus) .entry-org{ color: var(--muted); opacity: 0.7; }
+  .entry:not(.focus) .entry-desc{ transform: scale(0.929); color: var(--muted); }
+  .entry.personal.focus .entry-desc{ color: var(--text-dim); }
 
   .resume-cta{
     margin-top: var(--sp-24);
@@ -203,13 +219,10 @@
 <div id="page-root">
 <div class="wrap">
 
-  <a class="crumb" href="../">← zoebmithaiwala.dev</a>
+  <a class="crumb" href="../">← Home</a>
 
   <h1>The Journey</h1>
-  <p class="subtitle">
-    From falling for computers in 2012 to whatever inference problem is currently
-    on fire at Ambient.ai — the long version, roughly in order.
-  </p>
+  <p class="subtitle">Here is my professional journey in short.</p>
 
   <div class="timeline" id="timeline">
     <div class="timeline-line"></div>
@@ -323,12 +336,46 @@
     entries.forEach(e => io.observe(e));
   }
 
+  function dotOffset(entry, rect){
+    const d = entry.querySelector('.dot');
+    const r = d.getBoundingClientRect();
+    return r.top + r.height / 2 - rect.top;
+  }
+
   let ticking = false;
   function updateFill(){
     const rect = timeline.getBoundingClientRect();
     const viewportMid = window.innerHeight * 0.6;
     const progressed = Math.min(Math.max(viewportMid - rect.top, 0), rect.height);
-    fill.style.height = progressed + 'px';
+    // before any scrolling, always start on the first entry -- the fixed
+    // focus line can otherwise already sit past a short first entry.
+    const pointY = window.scrollY <= 0 ? -Infinity : rect.top + progressed;
+
+    let idx = 0;
+    entries.forEach((e, i) => {
+      if(e.getBoundingClientRect().top <= pointY) idx = i;
+    });
+    entries.forEach((e, i) => e.classList.toggle('focus', i === idx));
+
+    if(window.scrollY <= 0){
+      fill.style.height = '0px';
+      ticking = false;
+      return;
+    }
+
+    // gradual fill between the current entry's dot and the next one --
+    // it never leaves that range, so it's always "inside" whichever
+    // section is highlighted, but keeps moving smoothly as you scroll.
+    const currTop = entries[idx].getBoundingClientRect().top;
+    const nextTop = idx < entries.length - 1 ? entries[idx + 1].getBoundingClientRect().top : (rect.top + rect.height);
+    const currDot = dotOffset(entries[idx], rect);
+    const nextDot = idx < entries.length - 1 ? dotOffset(entries[idx + 1], rect) : rect.height;
+
+    const span = nextTop - currTop;
+    const frac = span > 0 ? Math.min(Math.max((pointY - currTop) / span, 0), 1) : 0;
+    const fillHeight = currDot + (nextDot - currDot) * frac;
+
+    fill.style.height = Math.min(Math.max(fillHeight, 0), rect.height) + 'px';
     ticking = false;
   }
   window.addEventListener('scroll', () => {
