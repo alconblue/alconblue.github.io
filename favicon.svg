@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#08090c"/>
+  <text x="32" y="34" text-anchor="middle" dominant-baseline="central"
+        font-family="Fraunces, Georgia, 'Times New Roman', serif"
+        font-weight="600" font-size="30" letter-spacing="-1.5"
+        fill="#e9e7e2">ZM</text>
+</svg>
