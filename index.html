@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zoeb Mithaiwala</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <meta name="description" content="Systems engineer turned applied AI researcher. Distributed infrastructure at Google, real-time inference at Ambient.ai.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -199,83 +200,43 @@
   .c-dim{ color: var(--muted); }
   .bio-term-code{ font-size: 12px; line-height: 1.5; }
 
-  .links{
-    display:flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    font-size: 13px;
-    margin-top: var(--sp-12);
-  }
-  .links a{
-    color: var(--text);
-    text-decoration: none;
-    padding: var(--sp-2) var(--sp-1);
-    position: relative;
-  }
-  .links a::before{ content: "["; color: var(--muted); margin-right: 2px; }
-  .links a::after{ content: "]"; color: var(--muted); margin-left: 2px; }
-  .links a:hover{ color: var(--accent); }
-  .links a:hover::before, .links a:hover::after{ color: var(--accent); }
-
-  /* ---------- content below hero ---------- */
-  .wrap{ max-width: 720px; margin: 0; padding: var(--sp-24) var(--gutter) var(--sp-30); }
-
-  h2.section{
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 0 0 8px;
-  }
-  .section-note{
-    font-size: 13px;
-    color: var(--muted);
-    margin: 0 0 var(--sp-8);
-    padding-bottom: var(--sp-5);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .lab-list{ display:flex; flex-direction: column; }
-
-  .lab-item{
-    display:block;
-    text-decoration:none;
-    color: inherit;
-    padding: var(--sp-6) 0;
-    border-bottom: 1px solid var(--line);
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .lab-item.in{ opacity: 1; transform: translateY(0); }
-
-  .lab-row{
-    display:flex;
-    justify-content: space-between;
-    align-items: baseline;
+  .hero-links{
+    position: absolute;
+    z-index: 2;
+    top: var(--sp-6);
+    right: var(--gutter);
+    display: flex;
+    align-items: center;
     gap: var(--sp-4);
+    color: var(--muted);
+    opacity: 0.55;
+    transition: opacity 0.2s ease;
   }
-  .lab-title{
-    font-family: var(--serif);
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--text);
-    transition: color 0.15s ease;
+  .hero-links:hover{ opacity: 1; }
+  .hero-links a{
+    color: inherit;
+    display: block;
+    line-height: 0;
+    transition: color 0.15s ease, transform 0.15s ease;
   }
-  .lab-item:hover .lab-title{ color: var(--accent); }
-  .lab-tag{ font-size: 11px; color: var(--muted); white-space: nowrap; letter-spacing: 0.04em; }
-  .lab-desc{ font-size: 14px; color: var(--text-dim); margin-top: var(--sp-2); max-width: 65ch; }
+  .hero-links a:hover{ color: var(--accent); transform: translateY(-1px); }
+  .hero-links svg{ width: 16px; height: 16px; display: block; }
 
-  .lab-underline{
-    height: 1px;
-    background: var(--accent);
-    width: 0%;
-    transition: width 0.3s ease;
-    margin-top: var(--sp-3);
+  .credit{
+    position: absolute;
+    z-index: 2;
+    bottom: var(--sp-6);
+    right: var(--gutter);
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    opacity: 0.55;
+    transition: opacity 0.2s ease, color 0.15s ease, border-color 0.15s ease;
   }
-  .lab-item:hover .lab-underline{ width: 46px; }
-
-  .lab-empty{ font-size: 13px; color: var(--muted); padding: var(--sp-6) 0; }
+  .credit:hover{ opacity: 1; color: var(--accent); border-color: var(--accent); }
+  @media (max-width: 560px){ .credit{ display: none; } }
 
   .journey-cta{
     margin-top: var(--sp-2);
@@ -291,8 +252,6 @@
   .journey-link:hover{ color: var(--accent); border-color: var(--accent); }
   .journey-link .arrow{ display: inline-block; transition: transform 0.15s ease; }
   .journey-link:hover .arrow{ transform: translateX(3px) rotate(-8deg); }
-
-  footer{ margin-top: var(--sp-8); color: var(--muted); font-size: 12px; }
 
   @media (max-width: 560px){
     .hero{ align-items: flex-end; }
@@ -328,6 +287,17 @@
 <section class="hero">
   <canvas id="net"></canvas>
   <div class="hero-fade"></div>
+  <div class="hero-links">
+    <a href="mailto:zoebmithaiwala1@gmail.com" aria-label="email" title="email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22 6 12 13 2 6"></polyline></svg>
+    </a>
+    <a href="https://www.linkedin.com/in/zoeb-mithaiwala-34447b146" target="_blank" rel="noopener" aria-label="linkedin" title="linkedin">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </a>
+    <a href="https://github.com/alconblue" target="_blank" rel="noopener" aria-label="github" title="github">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+    </a>
+  </div>
   <div class="hero-inner">
     <h1>Zoeb<br>Mithaiwala</h1>
     <p class="role" id="role"><span id="role-text"></span><span class="cursor-blink"></span></p>
@@ -348,34 +318,9 @@
     </div>
     <p class="journey-cta">see my <a class="journey-link" href="./journey/">journey <span class="arrow">→</span></a></p>
   </div>
+  <a class="credit" href="https://harshitabhargava.design/" target="_blank" rel="noopener">designed by Harshita Bhargava</a>
 </section>
 
-<div class="wrap">
-  <h2 class="section">lab</h2>
-  <p class="section-note">interactive write-ups on real production bugs and side builds</p>
-
-  <div class="lab-list" id="lab-list">
-    <a class="lab-item" href="./playground/bgr-rgb-cache-locality/">
-      <div class="lab-row">
-        <span class="lab-title">The Reversal That Wasn't Free</span>
-        <span class="lab-tag">systems · memory</span>
-      </div>
-      <div class="lab-desc">
-        Why a "free" NumPy slice quietly cost more than a real OpenCV copy. An
-        interactive look at cache locality in a production vision pipeline.
-      </div>
-      <div class="lab-underline"></div>
-    </a>
-  </div>
-
-  <div class="links">
-    <a href="mailto:zoebmithaiwala1@gmail.com">email</a>
-    <a href="https://www.linkedin.com/in/zoeb-mithaiwala-34447b146" target="_blank" rel="noopener">linkedin</a>
-    <a href="https://github.com/alconblue" target="_blank" rel="noopener">github</a>
-  </div>
-
-  <footer>more of these are on the way</footer>
-</div>
 </div>
 
 <script>
@@ -778,23 +723,6 @@
     });
   })();
 
-  /* ---------- scroll reveal for lab items ---------- */
-  (function reveal(){
-    const items = document.querySelectorAll('.lab-item');
-    if(!('IntersectionObserver' in window) || reduceMotion){
-      items.forEach(i => i.classList.add('in'));
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    items.forEach(i => io.observe(i));
-  })();
 
   /* ---------- pivot, then journey into a star (one-way) ---------- */
   (function pageTransitions(){
